@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NextLua.API", "NextLua.API\NextLua.API.csproj", "{9C3ACEF5-1D81-4BF5-9475-50809548D8B9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NextLua.Entities", "NextLua.Entities\NextLua.Entities.csproj", "{1258590F-94D8-475A-8FC1-073B8ACF5E01}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NextLua.Core", "NextLua.Core\NextLua.Core.csproj", "{5993E8B5-9AF3-4BD1-82AF-3FCF4BBB8119}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NextLua.DataAccess", "NextLua.DataAccess\NextLua.DataAccess.csproj", "{048C1071-1A68-46A1-B36A-03EDE918A8CB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NextLua.Business", "NextLua.Business\NextLua.Business.csproj", "{7E296A40-7CCC-4819-BE90-EFD14A96CD3F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9C3ACEF5-1D81-4BF5-9475-50809548D8B9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9C3ACEF5-1D81-4BF5-9475-50809548D8B9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9C3ACEF5-1D81-4BF5-9475-50809548D8B9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9C3ACEF5-1D81-4BF5-9475-50809548D8B9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1258590F-94D8-475A-8FC1-073B8ACF5E01}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1258590F-94D8-475A-8FC1-073B8ACF5E01}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1258590F-94D8-475A-8FC1-073B8ACF5E01}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1258590F-94D8-475A-8FC1-073B8ACF5E01}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5993E8B5-9AF3-4BD1-82AF-3FCF4BBB8119}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5993E8B5-9AF3-4BD1-82AF-3FCF4BBB8119}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5993E8B5-9AF3-4BD1-82AF-3FCF4BBB8119}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5993E8B5-9AF3-4BD1-82AF-3FCF4BBB8119}.Release|Any CPU.Build.0 = Release|Any CPU
+		{048C1071-1A68-46A1-B36A-03EDE918A8CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{048C1071-1A68-46A1-B36A-03EDE918A8CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{048C1071-1A68-46A1-B36A-03EDE918A8CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{048C1071-1A68-46A1-B36A-03EDE918A8CB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7E296A40-7CCC-4819-BE90-EFD14A96CD3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7E296A40-7CCC-4819-BE90-EFD14A96CD3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7E296A40-7CCC-4819-BE90-EFD14A96CD3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7E296A40-7CCC-4819-BE90-EFD14A96CD3F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
