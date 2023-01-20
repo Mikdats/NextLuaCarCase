@@ -60,84 +60,34 @@ public class CarController : Controller
     
     [HttpGet]
     [Route("get")]
-    public Car Get(int id)
+    public ActionResult<CarResponseDto> Get(int id)
     {
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-        return _carService.GetAll().Where(x => x.SellerId == currentUserID && x.Id==id).FirstOrDefault();
-    }
-    
-    [HttpPut]
-    [Route("buyCar")]
-    public IActionResult BuyCar(int id,decimal payment)
-    {
-        var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-        var currentUserName = User.Identity.Name;
-        var car = _carService.GetAll().Where(x => x.Id==id).FirstOrDefault();
-        
-        if(car==null)
-            return StatusCode(StatusCodes.Status500InternalServerError, "There isn't a car with this Id!");
-        
-        if(car.SellerId==currentUserID)
-            return StatusCode(StatusCodes.Status500InternalServerError, "You can't buy your own car!");
-
-        car.Payment += payment;
-        car.BuyerId = currentUserID;
-        car.BuyerName = currentUserName;
-  
-        if (car.Price - car.Payment > 0)
-        {
-            car.PaymentStatus = Enums.PaymentStatus.InProcess;
-        }
-        else
-        {
-            car.PaymentStatus = Enums.PaymentStatus.Completed;
-            car.PurchaseStatus = Enums.PurchaseStatus.Waiting;
-        }
-
-        _carService.Update(car);
-        return Ok();
-    }
-
-    [HttpPut]
-    [Route("sellCar")]
-    public IActionResult SellCar(int id)
-    {
-        var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-        var car = _carService.GetAll().Where(x => x.Id == id && x.SellerId==currentUserID).FirstOrDefault();
-
-        if (car == null)
-            return StatusCode(StatusCodes.Status500InternalServerError, "There isn't a car with this Id!");
-
-        if(car.Payment!=car.Price)
-            return StatusCode(StatusCodes.Status500InternalServerError, "Purchase process still continue!");
-        
-        car.PurchaseStatus = Enums.PurchaseStatus.Approved;
-        _carService.Update(car);
-        return Ok();
-    }
-    
-    [HttpGet]
-    [Route("waitingApproval")]
-    public IActionResult WaitingApproval()
-    {
-        var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-        var cars = _carService.GetAll().Where(x => x.PurchaseStatus==Enums.PurchaseStatus.Waiting && x.SellerId==currentUserID).ToList();
-
-        if (!cars.Any())
-            return StatusCode(StatusCodes.Status500InternalServerError, "There aren't any cars!");
-        
-        return  Ok(cars);
+        return _carService.GetAll().Where(x => x.SellerId == currentUserID && x.Id==id).
+            Select(x=>new CarResponseDto()
+            {
+                CarId = x.Id,
+                Model = x.Model,
+                Color = x.Color,
+                Price = x.Price
+            }).FirstOrDefault() ?? throw new InvalidOperationException("Can' find a car with this id");
     }
 
     [HttpGet]
     [Route("list")]
-    public List<Car> List()
+    public List<CarResponseDto> List()
     {
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-        return _carService.GetAll().Where(x => x.SellerId == currentUserID).ToList();
+        return _carService.GetAll().Where(x => x.SellerId == currentUserID).
+            Select(x=>new CarResponseDto()
+            {
+                CarId = x.Id,
+                Model = x.Model,
+                Color = x.Color,
+                Price = x.Price
+            }).ToList();
     }
     
-
     [HttpDelete]
     [Route("delete")]
     public IActionResult Delete(int id)

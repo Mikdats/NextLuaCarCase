@@ -15,20 +15,8 @@ public class NextLuaDB : IdentityDbContext<IdentityUser>
     }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
-        // modelBuilder.Entity<Car>()
-        //     .HasOne(x => x.BuyerUser)
-        //     .WithMany(x => x.BuyerCars)
-        //     .HasForeignKey(x => x.BuyerId);
-        //
-        // modelBuilder.Entity<Car>()
-        //     .HasOne(x => x.SellerUser)
-        //     .WithMany(x => x.SellerCars)
-        //     .HasForeignKey(x => x.SellerId);
-            
-
         base.OnModelCreating(modelBuilder);
     }
 
     public DbSet<Car> Cars { get; set; }
-    public DbSet<User> Users { get; set; }
 }
