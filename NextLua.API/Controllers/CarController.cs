@@ -5,6 +5,7 @@ using NextLua.Business.Abstract;
 using NextLua.Entities.Concrete;
 using NextLua.Entities.DTOs;
 using System.Security.Claims;
+using AutoMapper;
 using NextLua.Core.Entities;
 
 namespace NextLua.API.Controllers;
@@ -16,11 +17,13 @@ public class CarController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly ICarService _carService;
-
-    public CarController(ICarService carService, UserManager<IdentityUser> userManager)
+    private readonly IMapper _mapper;
+    
+    public CarController(ICarService carService, UserManager<IdentityUser> userManager, IMapper mapper)
     {
         _carService = carService;
         _userManager = userManager;
+        _mapper = mapper;
     }
 
     [HttpPost] 
@@ -63,29 +66,22 @@ public class CarController : Controller
     public ActionResult<CarResponseDto> Get(int id)
     {
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-        return _carService.GetAll().Where(x => x.SellerId == currentUserID && x.Id==id).
-            Select(x=>new CarResponseDto()
-            {
-                CarId = x.Id,
-                Model = x.Model,
-                Color = x.Color,
-                Price = x.Price
-            }).FirstOrDefault() ?? throw new InvalidOperationException("Can' find a car with this id");
+        var car= _carService.GetAll().FirstOrDefault(x => x.SellerId == currentUserID && x.Id == id);
+        if (car == null)
+            return BadRequest("There isn't a car with this Id");
+        var carDto = _mapper.Map<CarResponseDto>(car);
+        return Ok(carDto);
     }
 
     [HttpGet]
     [Route("list")]
-    public List<CarResponseDto> List()
+    public ActionResult<List<CarResponseDto>> List()
     {
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-        return _carService.GetAll().Where(x => x.SellerId == currentUserID).
-            Select(x=>new CarResponseDto()
-            {
-                CarId = x.Id,
-                Model = x.Model,
-                Color = x.Color,
-                Price = x.Price
-            }).ToList();
+        var cars = _carService.GetAll().Where(x => x.SellerId == currentUserID);
+        var carDtos = _mapper.Map<List<CarResponseDto>>(cars);
+        return Ok(carDtos);
+
     }
     
     [HttpDelete]

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using NextLua.Business.Abstract;
 using NextLua.Core.Entities;
@@ -13,67 +14,49 @@ namespace NextLua.API.Controllers
     {
 
         private readonly ICarService _carService;
+        private readonly IMapper _mapper;
 
-        public HomeController(ICarService carService)
+        public HomeController(ICarService carService, IMapper mapper)
         {
             _carService = carService;
-          
+            _mapper = mapper;
         }
 
         [HttpGet]
         [Route("listcars")]
-        public List<CarResponseDto> ListCars()
+        public async Task<ActionResult> ListCars()
         {
-            return _carService.GetAll().Where(x=>x.BuyerId ==null).
-                Select(x=>new CarResponseDto()
-                {
-                    CarId = x.Id,
-                    Color = x.Color,
-                    Model = x.Model,
-                    Price = x.Price
-                }).ToList();
+            var cars = _carService.GetAll().Where(x=>x.BuyerId==null);
+            var carDtos = _mapper.Map<List<CarResponseDto>>(cars);
+            return Ok(carDtos);
         }
         
         [HttpGet]
         [Route("allSoldCars")]
-        public List<CarResponseDto> AllSoldCars()
+        public async Task<ActionResult> AllSoldCars()
         {
-            return _carService.GetAll().Where(x=>x.PurchaseStatus ==Enums.PurchaseStatus.Approved).
-                Select(x=>new CarResponseDto()
-                {
-                    CarId = x.Id,
-                    Color = x.Color,
-                    Model = x.Model,
-                    Price = x.Price
-                }).ToList();
+            var cars = _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Approved);
+            var carDtos = _mapper.Map<List<CarResponseDto>>(cars);
+            return Ok(carDtos);
         }
         
         [HttpGet]
         [Route("allSoldCarsWithBuyerName")]
-        public List<BoughtCarDto> AllSoldCarsWithBuyerName()
+        public async Task<ActionResult> AllSoldCarsWithBuyerName()
         {
-            return _carService.GetAll().Where(x=>x.PurchaseStatus ==Enums.PurchaseStatus.Approved).
-                Select(x=>new BoughtCarDto()
-                {
-                    Color = x.Color,
-                    Model = x.Model,
-                    Price = x.Price,
-                    BuyerName = x.BuyerName
-                }).ToList();
+            var cars= _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Approved);
+            var carDtos = _mapper.Map<List<BoughtCarDto>>(cars);
+            return Ok(carDtos);
         }
         
         [HttpGet]
-        [Route("allSoldCarsWithSellerName")]
-        public List<SoldCarDto> AllSoldCarsWithSellerName()
+        [Route("all" +
+               "SoldCarsWithSellerName")]
+        public async Task<ActionResult> AllSoldCarsWithSellerName()
         {
-            return _carService.GetAll().Where(x=>x.PurchaseStatus ==Enums.PurchaseStatus.Approved).
-                Select(x=>new SoldCarDto()
-                {
-                    Color = x.Color,
-                    Model = x.Model,
-                    Price = x.Price,
-                    SellerName = x.SellerName
-                }).ToList();
+            var cars= _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Approved);
+            var carDtos = _mapper.Map<List<SoldCarDto>>(cars);
+            return Ok(carDtos);
         }
     }
 }

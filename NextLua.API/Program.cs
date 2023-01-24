@@ -6,6 +6,7 @@ using System.Text;
 using Microsoft.OpenApi.Models;
 using NextLua.Business.Abstract;
 using NextLua.Business.Concrete;
+using NextLua.Business.Mapping;
 using NextLua.DataAccess.Abstract;
 using NextLua.DataAccess.Concrete;
 using NextLua.DataAccess.Concrete.Context;
@@ -20,6 +21,9 @@ builder.Services.AddDbContext<NextLuaDB>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
 
 builder.Services.AddScoped<ICarService, CarService>();
+
+//Add Mapping
+builder.Services.AddAutoMapper(typeof(MappingProfile));
 
 
 // Add Identity Framework Core..

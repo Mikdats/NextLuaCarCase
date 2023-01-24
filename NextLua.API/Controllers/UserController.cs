@@ -1,3 +1,4 @@
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,20 +11,20 @@ namespace NextLua.API.Controllers;
 public class UserController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
+    private readonly IMapper _mapper;
 
-    public UserController(UserManager<IdentityUser> userManager)
+    public UserController(UserManager<IdentityUser> userManager, IMapper mapper)
     {
         _userManager = userManager;
+        _mapper = mapper;
     }
 
     [HttpGet]
     [Route("userlist")]
-    public async Task<List<UserDto>> List()
+    public async Task<ActionResult> List()
     {
-        return await _userManager.Users.Select(x=>new UserDto()
-        {
-            Email = x.Email,
-            UserName = x.UserName
-        }).ToListAsync();
+        var users = await _userManager.Users.ToListAsync();
+        var userDtos = _mapper.Map<List<UserDto>>(users);
+        return Ok(userDtos);
     }
 }

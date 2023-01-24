@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,11 +16,13 @@ public class CustomerController : Controller
 {
     private readonly UserManager<IdentityUser> _userManager;
     private readonly ICarService _carService;
+    private readonly IMapper _mapper;
 
-    public CustomerController(ICarService carService, UserManager<IdentityUser> userManager)
+    public CustomerController(ICarService carService, UserManager<IdentityUser> userManager, IMapper mapper)
     {
         _carService = carService;
         _userManager = userManager;
+        _mapper = mapper;
     }
      [HttpPut]
     [Route("buyCar")]
@@ -76,19 +79,13 @@ public class CustomerController : Controller
     public ActionResult<List<CarResponseDto>> WaitingApproval()
     {
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-        var cars = _carService.GetAll().Where(x => x.PurchaseStatus==Enums.PurchaseStatus.Waiting && x.SellerId==currentUserID).
-            Select(x=>new CarResponseDto()
-            {
-                CarId = x.Id,
-                Model = x.Model,
-                Color = x.Color,
-                Price = x.Price
-            } ).ToList();
+        var cars = _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Waiting && x.SellerId == currentUserID);
+        var carDtos = _mapper.Map<List<CarResponseDto>>(cars);
 
         if (!cars.Any())
             return StatusCode(StatusCodes.Status500InternalServerError, "There aren't any cars!");
         
-        return  Ok(cars);
+        return  Ok(carDtos);
     }
 
     [HttpGet]
@@ -96,19 +93,13 @@ public class CustomerController : Controller
     public ActionResult<List<SoldCarDto>> SoldCars()
     {
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-        var cars = _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Approved && x.SellerId == currentUserID).
-            Select(x=>new SoldCarDto()
-            {
-                Model = x.Model,
-                Color = x.Color,
-                SellerName = x.SellerName,
-                Price = x.Price
-            }).ToList();
-
+        var cars = _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Approved && x.SellerId == currentUserID);
+        var carDtos = _mapper.Map<List<SoldCarDto>>(cars);
+        
         if (!cars.Any())
             return StatusCode(StatusCodes.Status500InternalServerError, "There aren't any cars!");
 
-        return Ok(cars);
+        return Ok(carDtos);
     }
 
     [HttpGet]
@@ -116,19 +107,13 @@ public class CustomerController : Controller
     public ActionResult<List<BoughtCarDto>> BoughtCars()
     {
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
-        var cars = _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Approved && x.BuyerId == currentUserID).
-            Select(x=>new BoughtCarDto()
-            {
-                Model = x.Model,
-                Color = x.Color,
-                BuyerName = x.BuyerName,
-                Price = x.Price
-            }).ToList();
-
+        var cars = _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Approved && x.BuyerId == currentUserID);
+        var carDtos = _mapper.Map<List<BoughtCarDto>>(cars);
+        
         if (!cars.Any())
             return StatusCode(StatusCodes.Status500InternalServerError, "There aren't any cars!");
 
-        return Ok(cars);
+        return Ok(carDtos);
     }
 
 }
