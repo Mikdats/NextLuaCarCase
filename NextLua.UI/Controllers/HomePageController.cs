@@ -22,10 +22,10 @@ public class HomePageController :Controller
             }
             var list= new HomePageVM()
             {
-               Cars = cars
+                Cars = cars
             };
         
-             return View(list);
+            return View(list);
         }
     }
 }
