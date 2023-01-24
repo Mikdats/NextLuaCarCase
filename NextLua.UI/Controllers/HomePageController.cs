@@ -1,12 +1,11 @@
 using Microsoft.AspNetCore.Mvc;
-using NextLua.Entities.Concrete;
 using Newtonsoft.Json;
 using NextLua.Entities.DTOs;
-using NextLua.UI.Models;
+using NextLua.UI.Models.HomePage;
 
 namespace NextLua.UI.Controllers;
 
-public class CarController:Controller
+public class HomePageController :Controller
 {
     [HttpGet]
     public async Task<IActionResult> AllSoldCars()
@@ -19,11 +18,14 @@ public class CarController:Controller
             {
                 string apiResponse = await response.Content.ReadAsStringAsync();
                 cars = JsonConvert.DeserializeObject<List<CarResponseDto>>(apiResponse).ToList();
+       
             }
-            
-            ViewBag.cars = cars;
-            return View();
-    
+            var list= new HomePageVM()
+            {
+               Cars = cars
+            };
+        
+             return View(list);
         }
     }
 }
