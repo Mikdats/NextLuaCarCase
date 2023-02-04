@@ -1,7 +1,7 @@
-@model NextLua.UI.Models.HomePage.CarResponseVM
+@model NextLua.UI.Models.HomePage.BoughtCarVM
 
 @{
-    ViewData["Title"] = "AllSoldCars";
+    ViewData["Title"] = "AllSoldCarsWithBuyerName";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <div class="container">
@@ -9,6 +9,7 @@
     <table class="table table-striped table-bordered" id="myTable">
         <thead>
         <tr>
+            <th>Alıcı İsmi</th> 
             <th>Araba Model</th> 
             <th>Renk</th> 
             <th>Fiyat</th>
@@ -18,6 +19,9 @@
         @foreach (var item in Model.Cars)
         {
             <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BuyerName)
+                </td> 
                 <td>
                     @Html.DisplayFor(modelItem => item.Model)
                 </td>

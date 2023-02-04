@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NextLua.Business.Abstract;
+using NextLua.Business.Token;
 using NextLua.Core.Entities;
 using NextLua.Entities.DTOs;
 
@@ -28,6 +29,8 @@ public class CustomerController : Controller
     [Route("buyCar")]
     public IActionResult BuyCar(int id,decimal payment)
     {
+        if (CheckAuthorization())
+            return Unauthorized();
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
         var currentUserName = User.Identity?.Name;
         var car = _carService.GetAll().FirstOrDefault(x => x.Id==id);
@@ -60,6 +63,8 @@ public class CustomerController : Controller
     [Route("sellCar")]
     public IActionResult SellCar(int id)
     {
+        if (CheckAuthorization())
+            return Unauthorized();
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
         var car = _carService.GetAll().FirstOrDefault(x => x.Id == id && x.SellerId==currentUserID);
 
@@ -78,6 +83,8 @@ public class CustomerController : Controller
     [Route("waitingApproval")]
     public ActionResult<List<CarResponseDto>> WaitingApproval()
     {
+        if (CheckAuthorization())
+            return Unauthorized();
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
         var cars = _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Waiting && x.SellerId == currentUserID);
         var carDtos = _mapper.Map<List<CarResponseDto>>(cars);
@@ -92,6 +99,8 @@ public class CustomerController : Controller
     [Route("soldCars")]
     public ActionResult<List<SoldCarDto>> SoldCars()
     {
+        if (CheckAuthorization())
+            return Unauthorized();
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
         var cars = _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Approved && x.SellerId == currentUserID);
         var carDtos = _mapper.Map<List<SoldCarDto>>(cars);
@@ -106,6 +115,8 @@ public class CustomerController : Controller
     [Route("boughtCars")]
     public ActionResult<List<BoughtCarDto>> BoughtCars()
     {
+        if (CheckAuthorization())
+            return Unauthorized();
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
         var cars = _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Approved && x.BuyerId == currentUserID);
         var carDtos = _mapper.Map<List<BoughtCarDto>>(cars);
@@ -114,6 +125,17 @@ public class CustomerController : Controller
             return StatusCode(StatusCodes.Status500InternalServerError, "There aren't any cars!");
 
         return Ok(carDtos);
+    }
+    
+    [HttpGet]
+    public bool CheckAuthorization()
+    {
+        string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        if (InvalidatedTokenMethod.InvalidatedTokens.Tokens.Contains(token))
+        {
+            return true;
+        }
+        return false;
     }
 
 }

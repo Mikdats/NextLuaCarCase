@@ -6,6 +6,7 @@ using NextLua.Entities.Concrete;
 using NextLua.Entities.DTOs;
 using System.Security.Claims;
 using AutoMapper;
+using NextLua.Business.Token;
 using NextLua.Core.Entities;
 
 namespace NextLua.API.Controllers;
@@ -30,6 +31,8 @@ public class CarController : Controller
     [Route("addCar")]
     public IActionResult Add([FromBody] AddUpdateCarDto request)
     {
+        if (CheckAuthorization())
+            return Unauthorized();
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
         var currentUserName = User.Identity.Name;
         var car = new Car
@@ -48,6 +51,8 @@ public class CarController : Controller
     [Route("updateCar")]
     public IActionResult Update(int id, [FromBody] AddUpdateCarDto request)
     {
+        if (CheckAuthorization())
+            return Unauthorized();
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
         var car = _carService.GetAll().Where(x => x.SellerId == currentUserID && x.Id==id).FirstOrDefault();
         if (car.Payment > 0)
@@ -65,6 +70,8 @@ public class CarController : Controller
     [Route("get")]
     public ActionResult<CarResponseDto> Get(int id)
     {
+        if (CheckAuthorization())
+            return Unauthorized();
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
         var car= _carService.GetAll().FirstOrDefault(x => x.SellerId == currentUserID && x.Id == id);
         if (car == null)
@@ -77,6 +84,9 @@ public class CarController : Controller
     [Route("list")]
     public ActionResult<List<CarResponseDto>> List()
     {
+        if (CheckAuthorization())
+            return Unauthorized();
+      
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
         var cars = _carService.GetAll().Where(x => x.SellerId == currentUserID);
         var carDtos = _mapper.Map<List<CarResponseDto>>(cars);
@@ -88,9 +98,22 @@ public class CarController : Controller
     [Route("delete")]
     public IActionResult Delete(int id)
     {
+        if (CheckAuthorization())
+            return Unauthorized();
         var currentUserID = User.Claims.First(x => x.Type == ClaimTypes.NameIdentifier).Value;
         var car = _carService.GetAll().Where(x => x.SellerId == currentUserID && x.Id==id).FirstOrDefault();
         _carService.Delete(car);
         return Ok();
+    }
+    
+    [HttpGet]
+    public bool CheckAuthorization()
+    {
+        string token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        if (InvalidatedTokenMethod.InvalidatedTokens.Tokens.Contains(token))
+        {
+            return true;
+        }
+        return false;
     }
 }

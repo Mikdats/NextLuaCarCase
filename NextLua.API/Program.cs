@@ -10,6 +10,7 @@ using NextLua.Business.Mapping;
 using NextLua.DataAccess.Abstract;
 using NextLua.DataAccess.Concrete;
 using NextLua.DataAccess.Concrete.Context;
+using static NextLua.Business.Token.InvalidatedTokenMethod;
 
 var builder = WebApplication.CreateBuilder(args);
 ConfigurationManager configuration = builder.Configuration;
@@ -19,12 +20,12 @@ ConfigurationManager configuration = builder.Configuration;
 //     options.UseSqlServer(configuration.GetConnectionString("DefaultConnection")));
 builder.Services.AddDbContext<NextLuaDB>();
 builder.Services.AddScoped<ICarRepository, CarRepository>();
+builder.Services.AddSingleton<InvalidatedTokens>();
 
 builder.Services.AddScoped<ICarService, CarService>();
 
 //Add Mapping
 builder.Services.AddAutoMapper(typeof(MappingProfile));
-
 
 // Add Identity Framework Core..
 builder.Services.AddIdentity<IdentityUser, IdentityRole>()
@@ -103,6 +104,7 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
 
 
 

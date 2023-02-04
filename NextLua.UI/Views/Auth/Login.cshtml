@@ -1,0 +1,34 @@
+@model NextLua.Entities.DTOs.LoginModel
+
+@{
+    ViewData["Title"] = "Login";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-6" id="register-div">
+        <form asp-action="Login">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <a style="color: black"><b> <i class="bi bi-person-circle"></i> Giriş Ekranı</b></a>
+                <span class="alert-success" m-b-5>@ViewBag.Message </span>
+            </div>
+            <div class="form-group">
+                <label>İsim</label>
+                <input asp-for="Username" class="form-control" style="color:black"/>
+                <span asp-validation-for="Username" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Şifre</label>
+                <input asp-for="Password" class="form-control" style="color:black" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <br />
+                <input type="submit" value="Giriş Yap" class="btn btn-success" />
+                <input type="reset" value="Sil" class="btn btn-danger" />
+            </div>
+        </form>
+    </div>
+    <div class="col-3"> </div>
+</div>

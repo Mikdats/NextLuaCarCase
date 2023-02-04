@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -6,6 +7,7 @@ using NextLua.Entities.DTOs;
 
 namespace NextLua.API.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UserController : Controller

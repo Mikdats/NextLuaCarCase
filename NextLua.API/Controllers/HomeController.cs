@@ -9,7 +9,7 @@ using NextLua.Entities.DTOs;
 namespace NextLua.API.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    [ApiController] 
     public class HomeController : Controller
     {
 
@@ -50,8 +50,7 @@ namespace NextLua.API.Controllers
         }
         
         [HttpGet]
-        [Route("all" +
-               "SoldCarsWithSellerName")]
+        [Route("allSoldCarsWithSellerName")]
         public async Task<ActionResult> AllSoldCarsWithSellerName()
         {
             var cars= _carService.GetAll().Where(x => x.PurchaseStatus == Enums.PurchaseStatus.Approved);
